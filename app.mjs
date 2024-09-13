@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 const app = express()
 
-// Якщо потрібно використовувати __dirname в ES-модулі
+// Для визначення поточної директорії
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 

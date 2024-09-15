@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Список статей</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
+<%- include('layout', { title: 'Список статей' }) %>
 <h1>Список статей</h1>
 <ul>
     <% articles.forEach(function(article) { %>
@@ -13,5 +7,3 @@
         </li>
     <% }); %>
 </ul>
-</body>
-</html>

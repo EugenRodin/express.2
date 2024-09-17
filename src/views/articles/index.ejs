@@ -1,9 +1,7 @@
-<%- include('layout', { title: 'Список статей' }) %>
+<%- include('../layout.ejs', { title: 'Список статей' }) %>
 <h1>Список статей</h1>
 <ul>
     <% articles.forEach(function(article) { %>
-        <li>
-            <a href="/articles/<%= article.id %>"><%= article.title %></a>
-        </li>
+        <li><%= article.title %></li>
     <% }); %>
 </ul>

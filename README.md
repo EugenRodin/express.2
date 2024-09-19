@@ -1,4 +1,5 @@
-## Опис проекту
+# Express Server Project
+
 Цей проект є сервером на базі Express, який обробляє маршрути для користувачів та статей. Сервер використовує `helmet` для налаштування Content Security Policy (CSP) та підтримує шаблони `Pug` і `EJS`.
 
 ## Функціональність сервера
@@ -43,17 +44,15 @@
 ### Статті
 - **GET /articles**: Повертає список статей.
     - **Приклад**: `curl http://localhost:3000/articles`
-- **GET /articles/:articleId**: Повертає деталі статті за `articleId`.
-    - **Приклад**: `curl http://localhost:3000/articles/1`
 
 ### Тема
 - **POST /theme**: Зберігає улюблену тему користувача в cookies.
-    - **Приклад**: `curl -X POST -H "Content-Type: application/json" -d '{"theme":"dark"}' http://localhost:3000/theme`
+    - **Приклад**: `http://localhost:3000/theme`
 
 ### Авторизація
 - **POST /register**: Реєструє нового користувача та генерує JWT.
-    - **Приклад**: `curl -X POST -H "Content-Type: application/json" -d '{"username":"user1","password":"pass"}' http://localhost:3000/register`
+    - **Приклад**: `http://localhost:3000/register`
 - **POST /login**: Входить користувач та генерує JWT.
-    - **Приклад**: `curl -X POST -H "Content-Type: application/json" -d '{"username":"user1","password":"pass"}' http://localhost:3000/login`
+    - **Приклад**: `http://localhost:3000/login`
 - **GET /protected**: Захищений маршрут, доступний тільки для авторизованих користувачів.
     - **Приклад**: `curl http://localhost:3000/protected`

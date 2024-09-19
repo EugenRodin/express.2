@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Articles</title>
+  <title>Login</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -21,12 +21,14 @@
     </nav>
   </header>
   <main class="main-content">
-    <h1>Articles List</h1>
-    <ul>
-      <% articles.forEach(function(article) { %>
-        <li><%= article.title %></li>
-      <% }); %>
-    </ul>
+    <h1>Login</h1>
+    <form class="form" action="/login" method="post">
+      <label class="label" for="email">Email:</label>
+      <input class="input-email" type="email" id="email" name="email" required>
+      <label class="label" for="password">Password:</label>
+      <input class="input-password" type="password" id="password" name="password" required>
+      <button class="button" type="submit">Login</button>
+    </form>
   </main>
   <footer class="footer">
     <p>&copy; 2024 My Application</p>

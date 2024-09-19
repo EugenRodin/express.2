@@ -22,7 +22,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.engine('ejs', ejs.renderFile)
 
 // Статичні файли (CSS та favicon)
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public/css')))
 
 app.use(helmet())
 app.use(cookieParser())
@@ -38,6 +38,11 @@ const articles = [
   { id: 1, title: 'First Article', content: 'This is the first article' },
   { id: 2, title: 'Second Article', content: 'This is the second article' }
 ]
+
+// Маршрут для стартової сторінки
+app.get('/', (req, res) => {
+  res.render('home')
+})
 
 // Маршрут для списку користувачів
 app.get('/users', (req, res) => {
@@ -56,14 +61,14 @@ app.get('/users/:userId', (req, res) => {
 
 // Маршрут для списку статей (EJS)
 app.get('/articles', (req, res) => {
-  res.render('articles/index', { articles })
+  res.render('articles/index.ejs', { articles })
 })
 
 // Маршрут для деталей статті (EJS)
 app.get('/articles/:articleId', (req, res) => {
   const article = articles.find(a => a.id === parseInt(req.params.articleId))
   if (article) {
-    res.render('articles/details', { article })
+    res.render('articles/details.ejs', { article })
   } else {
     res.status(404).send('Article not found')
   }
@@ -71,15 +76,20 @@ app.get('/articles/:articleId', (req, res) => {
 
 // Маршрут для збереження теми
 app.get('/set-theme/:theme', (req, res) => {
-  const theme = req.params.theme
-  res.cookie('theme', theme, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
-  res.send(`Тему змінено на ${theme}`)
+  const theme = req.params.theme;
+  res.cookie('theme', theme, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+  res.send(`Тему змінено на ${theme}`);
 })
 
 // Маршрут для отримання теми з cookies
 app.get('/get-theme', (req, res) => {
-  const theme = req.cookies.theme || 'default'
-  res.send(`Поточна тема: ${theme}`)
+  const theme = req.cookies.theme || 'default';
+  res.send(`Поточна тема: ${theme}`);
+})
+
+// Маршрут для відображення форми реєстрації
+app.get('/register', (req, res) => {
+  res.render('register.ejs')
 })
 
 // Маршрут для реєстрації
@@ -100,6 +110,11 @@ app.post('/register', (req, res) => {
   const token = jwt.sign({ id: newUser.id, name: newUser.name }, SECRET_KEY, { expiresIn: '1h' })
   res.cookie('token', token, { httpOnly: true })
   res.json({ message: 'Користувач зареєстрований', token })
+})
+
+// Маршрут для відображення форми входу
+app.get('/login', (req, res) => {
+  res.render('login.ejs')
 })
 
 // Маршрут для входу

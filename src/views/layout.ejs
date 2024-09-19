@@ -2,17 +2,29 @@
 <html>
 <head>
     <title><%= title %></title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="/favicon.png">
 </head>
 <body>
-    <header>
-        <h1><%= title %></h1>
+    <header class="header">
+        <h1 class="header-title"><%= title %></h1>
+        <nav>
+            <ul class="nav-list">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
+                <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
+                <li class="nav-item"><a class="nav-link" href="/set-theme/dark">Set Dark Theme</a></li>
+                <li class="nav-item"><a class="nav-link" href="/set-theme/light">Set Light Theme</a></li>
+                <li class="nav-item"><a class="nav-link" href="/protected">Protected</a></li>
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+            </ul>
+        </nav>
     </header>
-    <main>
+    <main class="main-content">
         <%- body %>
     </main>
-    <footer>
+    <footer class="footer">
         <p>&copy; 2024 My Application</p>
     </footer>
 </body>

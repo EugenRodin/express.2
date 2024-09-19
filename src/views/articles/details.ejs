@@ -1,4 +1,8 @@
-<%- include('../layout.ejs', { title: 'Деталі статті' }) %>
-<h1><%= article.title %></h1>
-<p><%= article.content %></p>
-<a href="/articles">Back to Articles</a>
+extends ../layout.pug
+
+block content
+  script.
+    document.cookie = "theme=dark;path=/";
+  h1 #{user.name}
+  p Email: #{user.email}
+  a.nav-link(href="/users") Back to Users

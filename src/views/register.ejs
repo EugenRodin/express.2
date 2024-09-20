@@ -8,36 +8,35 @@
   <header class="header">
     <nav>
       <ul class="nav-list">
-        <li class="nav-item"><a class="nav-link" href="/">Главная</a></li>
-        <li class="nav-item"><a class="nav-link" href="/users">Пользователи</a></li>
-        <li class="nav-item"><a class="nav-link" href="/articles">Статьи</a></li>
-        <li class="nav-item"><a class="nav-link" href="/set-theme/dark">Темная тема</a></li>
-        <li class="nav-item"><a class="nav-link" href="/set-theme/light">Светлая тема</a></li>
-        <li class="nav-item"><a class="nav-link" href="/get-theme">Текущая тема</a></li>
-        <li class="nav-item"><a class="nav-link" href="/protected">Защищенная страница</a></li>
-        <li class="nav-item"><a class="nav-link" href="/register">Регистрация</a></li>
-        <li class="nav-item"><a class="nav-link" href="/login">Вход</a></li>
-        <li class="nav-item"><a class="nav-link" href="/logout">Выход</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">Головна</a></li>
+        <li class="nav-item"><a class="nav-link" href="/users">Користувачі</a></li>
+        <li class="nav-item"><a class="nav-link" href="/articles">Статті</a></li>
+        <li class="nav-item"><a class="nav-link" href="/set-theme/dark">Темна тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/set-theme/light">Світла тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/get-theme">Поточна тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/protected">Захищена сторінка</a></li>
+        <li class="nav-item"><a class="nav-link" href="/register">Реєстрація</a></li>
+        <li class="nav-item"><a class="nav-link" href="/login">Вхід</a></li>
       </ul>
     </nav>
   </header>
   <main class="main-content">
-    <h1>Регистрация</h1>
+    <h1>Реєстрація</h1>
     <form class="form" action="/register" method="post">
-      <label class="label" for="name">Имя:</label>
+      <label class="label" for="name">Ім'я:</label>
       <input class="input-text" type="text" id="name" name="name" required>
       <label class="label" for="email">Email:</label>
       <input class="input-email" type="email" id="email" name="email" required>
       <label class="label" for="password">Пароль:</label>
       <input class="input-password" type="password" id="password" name="password" required>
-      <button class="button" type="submit">Зарегистрироваться</button>
+      <button class="button" type="submit">Зареєструватися</button>
     </form>
     <% if (message.length > 0) { %>
       <p class="error-message"><%= message %></p>
     <% } %>
   </main>
   <footer class="footer">
-    <p>&copy; 2024 Мое Приложение</p>
+    <p>&copy; 2024 Мій додаток</p>
   </footer>
 </body>
 </html>

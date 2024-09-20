@@ -8,15 +8,16 @@
   <header class="header">
     <nav>
       <ul class="nav-list">
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
-        <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
-        <li class="nav-item"><a class="nav-link" href="/set-theme/dark">Set Dark Theme</a></li>
-        <li class="nav-item"><a class="nav-link" href="/set-theme/light">Set Light Theme</a></li>
-        <li class="nav-item"><a class="nav-link" href="/get-theme">Get Theme</a></li>
-        <li class="nav-item"><a class="nav-link" href="/protected">Protected</a></li>
-        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="/">Главная</a></li>
+        <li class="nav-item"><a class="nav-link" href="/users">Пользователи</a></li>
+        <li class="nav-item"><a class="nav-link" href="/articles">Статьи</a></li>
+        <li class="nav-item"><a class="nav-link" href="/set-theme/dark">Темная тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/set-theme/light">Светлая тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/get-theme">Текущая тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/protected">Защищенная страница</a></li>
+        <li class="nav-item"><a class="nav-link" href="/register">Регистрация</a></li>
+        <li class="nav-item"><a class="nav-link" href="/login">Вход</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Выход</a></li>
       </ul>
     </nav>
   </header>
@@ -29,6 +30,9 @@
       <input class="input-password" type="password" id="password" name="password" required>
       <button class="button" type="submit">Login</button>
     </form>
+    <% if (message && message.length > 0) { %>
+      <p class="error-message"><%= message %></p>
+    <% } %>
   </main>
   <footer class="footer">
     <p>&copy; 2024 My Application</p>

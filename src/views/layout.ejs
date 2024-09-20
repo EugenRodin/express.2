@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="icon" href="/favicon.png">
+  <title>Вход</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <header class="header">
-        <h1 class="header-title"><%= title %></h1>
-        <nav>
-            <ul class="nav-list">
-                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
-                <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
-                <li class="nav-item"><a class="nav-link" href="/set-theme/dark">Set Dark Theme</a></li>
-                <li class="nav-item"><a class="nav-link" href="/set-theme/light">Set Light Theme</a></li>
-                <li class="nav-item"><a class="nav-link" href="/protected">Protected</a></li>
-                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main class="main-content">
-        <%- body %>
-    </main>
-    <footer class="footer">
-        <p>&copy; 2024 My Application</p>
-    </footer>
+  <header class="header">
+    <nav>
+      <ul class="nav-list">
+        <li class="nav-item"><a class="nav-link" href="/">Главная</a></li>
+        <li class="nav-item"><a class="nav-link" href="/users">Пользователи</a></li>
+        <li class="nav-item"><a class="nav-link" href="/articles">Статьи</a></li>
+        <li class="nav-item"><a class="nav-link" href="/set-theme/dark">Темная тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/set-theme/light">Светлая тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/get-theme">Текущая тема</a></li>
+        <li class="nav-item"><a class="nav-link" href="/protected">Защищенная страница</a></li>
+        <li class="nav-item"><a class="nav-link" href="/register">Регистрация</a></li>
+        <li class="nav-item"><a class="nav-link" href="/login">Вход</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="main-content">
+    <h1>Вход</h1>
+    <form class="form" action="/login" method="post">
+      <label class="label" for="email">Email:</label>
+      <input class="input-email" type="email" id="email" name="email" required>
+      <label class="label" for="password">Пароль:</label>
+      <input class="input-password" type="password" id="password" name="password" required>
+      <button class="button" type="submit">Войти</button>
+    </form>
+    <% if (message.length > 0) { %>
+      <p class="error-message"><%= message %></p>
+    <% } %>
+  </main>
+  <footer class="footer">
+    <p>&copy; 2024 Мое Приложение</p>
+  </footer>
 </body>
 </html>

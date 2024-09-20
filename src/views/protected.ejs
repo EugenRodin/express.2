@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Регистрация</title>
+  <title>Защищенная страница</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -22,19 +22,10 @@
     </nav>
   </header>
   <main class="main-content">
-    <h1>Регистрация</h1>
-    <form class="form" action="/register" method="post">
-      <label class="label" for="name">Имя:</label>
-      <input class="input-text" type="text" id="name" name="name" required>
-      <label class="label" for="email">Email:</label>
-      <input class="input-email" type="email" id="email" name="email" required>
-      <label class="label" for="password">Пароль:</label>
-      <input class="input-password" type="password" id="password" name="password" required>
-      <button class="button" type="submit">Зарегистрироваться</button>
-    </form>
-    <% if (message.length > 0) { %>
-      <p class="error-message"><%= message %></p>
+    <% if (success && success.length > 0) { %>
+      <p class="success-message"><%= success %></p>
     <% } %>
+    <h1>Это защищенная страница</h1>
   </main>
   <footer class="footer">
     <p>&copy; 2024 Мое Приложение</p>

@@ -11,10 +11,34 @@ import flash from 'connect-flash'
 import userRoutes from './routes/userRoutes.js'
 import articleRoutes from './routes/articleRoutes.js'
 import users from './models/userModel.js'
+import { MongoClient } from 'mongodb'
+import CONFIG from './config.js'
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
+const URI = CONFIG.URI
 const SECRET_KEY = '123'
+
+// Створення нового клієнта для MongoDB Atlas
+const dbName = 'my-first-database'
+
+// Створення нового екземпляра MongoClient та підключення до бази даних
+const client = new MongoClient(URI)
+
+async function connect() { 
+ try { 
+ // Встановлення з'єднання з MongoDB Atlas 
+ await client.connect() 
+ console.log('Успішно підключено до MongoDB Atlas' ) 
+ // Отримання посилання на базу даних у Atlas 
+ const db = client.db(dbName)
+ } catch (err) { 
+ console.error('Помилка підключення до MongoDB Atlas' , err) 
+ } 
+} 
+
+// Запуск підключення 
+connect().catch(console.error)
 
 // Для визначення поточної директорії
 const __filename = fileURLToPath(import.meta.url);

@@ -11,8 +11,8 @@ import flash from 'connect-flash'
 import userRoutes from './routes/userRoutes.js'
 import articleRoutes from './routes/articleRoutes.js'
 import users from './models/userModel.js'
-import { MongoClient } from 'mongodb'
-import CONFIG from './config.js'
+import { Admin, MongoClient } from 'mongodb'
+import CONFIG from './config.mjs'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -25,17 +25,33 @@ const dbName = 'my-first-database'
 // Створення нового екземпляра MongoClient та підключення до бази даних
 const client = new MongoClient(URI)
 
-async function connect() { 
- try { 
- // Встановлення з'єднання з MongoDB Atlas 
- await client.connect() 
- console.log('Успішно підключено до MongoDB Atlas' ) 
- // Отримання посилання на базу даних у Atlas 
- const db = client.db(dbName)
- } catch (err) { 
- console.error('Помилка підключення до MongoDB Atlas' , err) 
- } 
-} 
+async function connect() {
+  async function checkAndCreateCollection(collectionName) {
+    try {
+      await client.connect()
+      const database = client.db(dbName)
+      // Отримуємо список існуючих колекцій 
+      const collections = await database.listCollections().toArray()
+      const collectionName = collections.map((collection) => collection.name)
+      console.log('Список існуючих колекцій:')
+      // Перевіряємо, чи існує колекція 'customers' 
+      if (!collectionNames.includes(collectionName)) {
+        await database.createCollection(collectionName)
+        console.log(`Колекція '${collectionName}' була створена.`)
+      } else {
+        console.log(`Колекція '${collectionName}' вже існує.`)
+      }
+      // Повторно отримуємо та виводимо список колекцій 
+      const updatedCollections = await database.listCollections().toArray()
+      console.log('Оновлений список колекцій:')
+      updatedCollections.forEach((collection) => console.log(collection.name))
+    } catch (error) {
+      console.error('Помилка:', error)
+    } finally {
+      await client.close()
+    }
+  }
+}
 
 // Запуск підключення 
 connect().catch(console.error)

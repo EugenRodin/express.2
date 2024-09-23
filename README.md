@@ -11,6 +11,7 @@
 - **Безпека**: використовується [`helmet`]
 - **Робота з Cookies**: збереження налаштувань користувача через cookies.
 - **Інтеграція Passport**: авторизація користувачів через Passport з використанням локальної стратегії (email та пароль).
+- **Підключення до MongoDB Atlas**: зберігання даних у базі даних MongoDB Atlas.
 
 ## Встановлення
 1. Клонувати репозиторій:
@@ -60,3 +61,11 @@
     - **Приклад**: `curl http://localhost:3000/logout`
 - **GET /protected**: Захищений маршрут, доступний тільки для авторизованих користувачів.
     - **Приклад**: `curl http://localhost:3000/protected`
+
+    ## Підключення до MongoDB Atlas
+Сервер підключається до MongoDB Atlas для зберігання даних. Переконайтеся, що ваш файл `config.mjs` містить правильний рядок підключення до MongoDB Atlas:
+
+```javascript
+const CONFIG = {
+  URI: 'mongodb+srv://Admin:12345!"@cluster0.nh9al.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+}

@@ -8,15 +8,17 @@ import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import session from 'express-session'
 import flash from 'connect-flash'
-import userRoutes from './routes/userRoutes.js'
-import articleRoutes from './routes/articleRoutes.js'
-import users from './models/userModel.js'
+import userRoutes from './routes/userRoutes.mjs'
+import articleRoutes from './routes/articleRoutes.mjs'
+import users from './models/userModel.mjs'
 import { Admin, MongoClient } from 'mongodb'
 import CONFIG from './config.mjs'
+import { getUsers } from './services/userService.mjs'
 
 const app = express()
 const PORT = process.env.PORT || 3000
 const URI = CONFIG.URI
+const router = express.Router()
 const SECRET_KEY = '123'
 
 // Створення нового клієнта для MongoDB Atlas
@@ -25,32 +27,56 @@ const dbName = 'my-first-database'
 // Створення нового екземпляра MongoClient та підключення до бази даних
 const client = new MongoClient(URI)
 
-async function connect() {
-  async function checkAndCreateCollection(collectionName) {
-    try {
-      await client.connect()
-      const database = client.db(dbName)
-      // Отримуємо список існуючих колекцій 
-      const collections = await database.listCollections().toArray()
-      const collectionName = collections.map((collection) => collection.name)
-      console.log('Список існуючих колекцій:')
-      // Перевіряємо, чи існує колекція 'customers' 
-      if (!collectionNames.includes(collectionName)) {
-        await database.createCollection(collectionName)
-        console.log(`Колекція '${collectionName}' була створена.`)
-      } else {
-        console.log(`Колекція '${collectionName}' вже існує.`)
-      }
-      // Повторно отримуємо та виводимо список колекцій 
-      const updatedCollections = await database.listCollections().toArray()
-      console.log('Оновлений список колекцій:')
-      updatedCollections.forEach((collection) => console.log(collection.name))
-    } catch (error) {
-      console.error('Помилка:', error)
-    } finally {
-      await client.close()
-    }
-  }
+// Створення нового екземпляра MongoClient та підключення до бази даних 
+async function connect() { 
+ try { 
+ // Встановлення з'єднання з MongoDB Atlas 
+ await client.connect() 
+   console.log('Успішно підключено до MongoDB Atlas') 
+   
+ // Отримання посилання на базу даних у Atlas 
+   const db = client.db(dbName) 
+
+  // Створення нової колекції, якщо вона не існує
+   const collections = await db.listCollections().toArray()
+   if (!collections.some(col => col.name === 'test')) {
+     await db.createCollection('test')
+     console.log('Колекцію test створено успішно')
+   }
+
+   if (!collections.some(col => col.name === 'users')) {
+     await db.createCollection('users')
+     console.log('Колекцію users створено успішно')
+   }
+
+   // Перевірка, чи існує документ у колекції test
+   const testDocument = await db.collection('test').findOne({ name: 'Test Document' });
+   if (!testDocument) {
+     // Додавання документа до колекції, якщо він не існує
+     await db.collection('test').insertOne({ name: 'Test Document' })
+     console.log('Документ додано успішно')
+   } else {
+     console.log('Документ вже існує')
+   }
+
+   // Перевірка, чи існують користувачі у колекції users
+   const userCount = await db.collection('users').countDocuments()
+   if (userCount === 0) {
+     // Додавання користувачів до колекції, якщо вони не існують
+     const usersFromService = getUsers()
+     await db.collection('users').insertMany(usersFromService)
+     console.log('Користувачів додано успішно')
+   } else {
+     console.log('Користувачі вже існують')
+   }
+
+ // Тут можемо використовувати базу даних та колекції 
+ const documents = await db.collection('test').find({}).toArray()
+   console.log('Отримані документи:', documents) 
+
+ } catch (err) { 
+ console.error('Помилка підключення до MongoDB Atlas' , err) 
+ } 
 }
 
 // Запуск підключення 

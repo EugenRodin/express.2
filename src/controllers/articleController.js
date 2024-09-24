@@ -1,4 +1,4 @@
-import articles from '../models/articleModel.js';
+import articles from '../models/articleModel.mjs';
 
 export const getArticles = (req, res) => {
   res.render('articles/index.ejs', { articles });

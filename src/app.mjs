@@ -49,34 +49,55 @@ async function connect() {
      console.log('Колекцію users створено успішно')
    }
 
-   // Перевірка, чи існує документ у колекції test
-   const testDocument = await db.collection('test').findOne({ name: 'Test Document' });
-   if (!testDocument) {
-     // Додавання документа до колекції, якщо він не існує
-     await db.collection('test').insertOne({ name: 'Test Document' })
-     console.log('Документ додано успішно')
-   } else {
-     console.log('Документ вже існує')
+// Перевірка, чи існує документ у колекції test
+const testDocument = await db.collection('test').findOne({ name: 'Test Document 1' })
+if (!testDocument) {
+  console.log('Документ не існує, додаємо нові документи')
+
+  // Додавання документів до колекції
+  await db.collection('test').insertMany(documents)
+  console.log('Документи додано успішно')
+  } else {
+  console.log('Документи вже існують')
+  }
+
+ // Визначаємо критерій для вибору документа
+  const query = { name: 'Test Document' }
+// Визначаємо нові значення для оновлення
+   const update = { $set: { name: 'test document updated' } }
+   
+// Оновлюємо один документ, який відповідає критерію
+const result = await db.collection('test').updateOne (query, update)
+console. log(`Оновлено ${result.modifiedCount } документ(ів)` )
+
+
+// Перевірка, чи існують користувачі у колекції users
+const userCount = await db.collection('users').countDocuments()
+if (userCount === 0) {
+  // Додавання користувачів до колекції, якщо вони не існують
+  const usersFromService = getUsers()
+  await db.collection('users').insertMany(usersFromService)
+  console.log('Користувачів додано успішно')
+} else {
+  console.log('Користувачі вже існують')
    }
-
-   // Перевірка, чи існують користувачі у колекції users
-   const userCount = await db.collection('users').countDocuments()
-   if (userCount === 0) {
-     // Додавання користувачів до колекції, якщо вони не існують
-     const usersFromService = getUsers()
-     await db.collection('users').insertMany(usersFromService)
-     console.log('Користувачів додано успішно')
-   } else {
-     console.log('Користувачі вже існують')
-   }
-
- // Тут можемо використовувати базу даних та колекції 
- const documents = await db.collection('test').find({}).toArray()
-   console.log('Отримані документи:', documents) 
-
+   // Визначаємо критерій для видалення документа 
+  const deleteQuery = { email: 'jane@example.com' } 
+  
+ // Видаляємо один документ, який відповідає критерію 
+ const deleteResult = await db.collection('users').deleteOne(deleteQuery) 
+   console.log(`Видалено ${deleteResult.deletedCount} документ(ів)`)
+   
+   // Встановлюємо projection для отримання лише імені та email кожного користувача
+const userQuery = {}
+   const projection = { name: 1, email: 1, _id: 0 }
+   
+const usersCollection = db.collection('users')
+const usersList = await usersCollection.find(userQuery, { projection }).toArray()
+console.log('Користувачі лишо з іменем та email', usersList)
  } catch (err) { 
- console.error('Помилка підключення до MongoDB Atlas' , err) 
- } 
+  console.error('Помилка підключення до MongoDB Atlas' , err) 
+ }
 }
 
 // Запуск підключення 

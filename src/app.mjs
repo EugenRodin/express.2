@@ -29,75 +29,75 @@ const client = new MongoClient(URI)
 
 // Створення нового екземпляра MongoClient та підключення до бази даних 
 async function connect() { 
- try { 
- // Встановлення з'єднання з MongoDB Atlas 
- await client.connect() 
-   console.log('Успішно підключено до MongoDB Atlas') 
-   
- // Отримання посилання на базу даних у Atlas 
-   const db = client.db(dbName) 
+  try { 
+    // Встановлення з'єднання з MongoDB Atlas 
+    await client.connect() 
+    console.log('Успішно підключено до MongoDB Atlas') 
+    
+    // Отримання посилання на базу даних у Atlas 
+    const db = client.db(dbName) 
 
-  // Створення нової колекції, якщо вона не існує
-   const collections = await db.listCollections().toArray()
-   if (!collections.some(col => col.name === 'test')) {
-     await db.createCollection('test')
-     console.log('Колекцію test створено успішно')
-   }
+    // Створення нової колекції, якщо вона не існує
+    const collections = await db.listCollections().toArray()
+    if (!collections.some(col => col.name === 'test')) {
+      await db.createCollection('test')
+      console.log('Колекцію test створено успішно')
+    }
 
-   if (!collections.some(col => col.name === 'users')) {
-     await db.createCollection('users')
-     console.log('Колекцію users створено успішно')
-   }
+    // Перевірка, чи існує документ у колекції test
+    const testDocument = await db.collection('test').findOne({ name: 'Test Document 1' })
+    if (!testDocument) {
+      console.log('Документ не існує, додаємо нові документи')
 
-// Перевірка, чи існує документ у колекції test
-const testDocument = await db.collection('test').findOne({ name: 'Test Document 1' })
-if (!testDocument) {
-  console.log('Документ не існує, додаємо нові документи')
+      // Додавання документів до колекції
+      await db.collection('test').insertMany([
+        { name: 'Test Document 1' },
+        { name: 'Test Document 2' }
+      ])
+      console.log('Документи додано успішно')
+    } else {
+      console.log('Документи вже існують')
+    }
 
-  // Додавання документів до колекції
-  await db.collection('test').insertMany(documents)
-  console.log('Документи додано успішно')
-  } else {
-  console.log('Документи вже існують')
+    // Визначаємо критерій для вибору документа
+    const query = { name: 'Test Document' }
+    // Визначаємо нові значення для оновлення
+    const update = { $set: { name: 'test document updated' } }
+
+    // Оновлюємо один документ, який відповідає критерію
+    const result = await db.collection('test').updateOne(query, update)
+    console.log(`Оновлено ${result.modifiedCount} документ(ів)`)
+
+    // Перевірка, чи існують користувачі у колекції users
+    const userCount = await db.collection('users').countDocuments()
+    if (userCount === 0) {
+      // Додавання користувачів до колекції, якщо вони не існують
+      const usersFromService = getUsers()
+      await db.collection('users').insertMany(usersFromService)
+      console.log('Користувачів додано успішно')
+    } else {
+      console.log('Користувачі вже існують')
+    }
+
+    // Визначаємо критерій для видалення документа
+    const deleteQuery = { email: 'jane@example.com' }
+
+    // Видаляємо один документ, який відповідає критерію
+    const deleteResult = await db.collection('users').deleteOne(deleteQuery)
+    console.log(`Видалено ${deleteResult.deletedCount} документ(ів)`)
+
+    // Встановлюємо projection для отримання лише імені та email кожного користувача
+    const userQuery = {}
+    const projection = { name: 1, email: 1, _id: 0 }
+
+    const usersCollection = db.collection('users')
+    const usersList = await usersCollection.find(userQuery, { projection }).toArray()
+    console.log('Користувачі лише з іменем та email', usersList)
+  } catch (err) {
+    console.error('Помилка при роботі з базою даних', err)
+  } finally {
+    await client.close()
   }
-
- // Визначаємо критерій для вибору документа
-  const query = { name: 'Test Document' }
-// Визначаємо нові значення для оновлення
-   const update = { $set: { name: 'test document updated' } }
-   
-// Оновлюємо один документ, який відповідає критерію
-const result = await db.collection('test').updateOne (query, update)
-console. log(`Оновлено ${result.modifiedCount } документ(ів)` )
-
-
-// Перевірка, чи існують користувачі у колекції users
-const userCount = await db.collection('users').countDocuments()
-if (userCount === 0) {
-  // Додавання користувачів до колекції, якщо вони не існують
-  const usersFromService = getUsers()
-  await db.collection('users').insertMany(usersFromService)
-  console.log('Користувачів додано успішно')
-} else {
-  console.log('Користувачі вже існують')
-   }
-   // Визначаємо критерій для видалення документа 
-  const deleteQuery = { email: 'jane@example.com' } 
-  
- // Видаляємо один документ, який відповідає критерію 
- const deleteResult = await db.collection('users').deleteOne(deleteQuery) 
-   console.log(`Видалено ${deleteResult.deletedCount} документ(ів)`)
-   
-   // Встановлюємо projection для отримання лише імені та email кожного користувача
-const userQuery = {}
-   const projection = { name: 1, email: 1, _id: 0 }
-   
-const usersCollection = db.collection('users')
-const usersList = await usersCollection.find(userQuery, { projection }).toArray()
-console.log('Користувачі лишо з іменем та email', usersList)
- } catch (err) { 
-  console.error('Помилка підключення до MongoDB Atlas' , err) 
- }
 }
 
 // Запуск підключення 
@@ -193,7 +193,7 @@ app.get('/register', (req, res) => {
 })
 
 // Маршрут для регістрації
-app.post('/register', (req, res) => {
+app.post('/register', (req, res, next) => {
   const { name, password, email } = req.body
 
   // Перевірити, чи користувач вже існує

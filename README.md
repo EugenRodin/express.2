@@ -86,6 +86,52 @@
     const usersList = await usersCollection.find(userQuery, { projection }).toArray()
     console.log('Користувачі лише з іменем та email', usersList)
 
+## Робота з базою даних
+
+### Додавання документів
+- **Приклад**: Додає новий документ до колекції [`test`]
+    ```javascript
+    const newDocument = { name: 'Test Document', content: 'This is a test document.' }
+    const result = await db.collection('test').insertOne(newDocument)
+    console.log('Document added:', result.insertedId)
+    ```
+
+### Оновлення документів
+- **Приклад**: Оновлює документ у колекції [`test`]
+    ```javascript
+    const filter = { name: 'Test Document' }
+    const update = { $set: { content: 'Updated content.' } }
+    const result = await db.collection('test').updateOne(filter, update)
+    console.log('Documents updated:', result.modifiedCount)
+    ```
+
+### Видалення документів
+- **Приклад**: Видаляє документ з колекції [`test`]
+    ```javascript
+    const filter = { name: 'Test Document' }
+    const result = await db.collection('test').deleteOne(filter)
+    console.log('Documents deleted:', result.deletedCount)
+    ```
+
+### Отримання документів
+- **Приклад**: Отримує документи з колекції [`test`]
+    ```javascript
+    const documents = await db.collection('test').find().toArray()
+    console.log('Documents:', documents)
+    ```
+
+### Отримання лише імені та email користувачів
+- **Приклад**:
+    ```javascript
+    // Встановлюємо projection для отримання лише імені та email кожного користувача
+    const userQuery = {}
+    const projection = { name: 1, email: 1, _id: 0 }
+    
+    const usersCollection = db.collection('users')
+    const usersList = await usersCollection.find(userQuery, { projection }).toArray()
+    console.log('Користувачі лише з іменем та email', usersList)
+    ```
+    
     ## Підключення до MongoDB Atlas
 Сервер підключається до MongoDB Atlas для зберігання даних. Переконайтеся, що ваш файл `config.mjs` містить правильний рядок підключення до MongoDB Atlas:
 

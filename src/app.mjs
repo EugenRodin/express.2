@@ -95,8 +95,6 @@ async function connect() {
     console.log('Користувачі лише з іменем та email', usersList)
   } catch (err) {
     console.error('Помилка при роботі з базою даних', err)
-  } finally {
-    await client.close()
   }
 }
 
@@ -115,7 +113,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.engine('ejs', ejs.renderFile)
 
 // Статичні файли (CSS та favicon)
-app.use(express.static(path.join(__dirname, 'public/css')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(helmet())
 app.use(cookieParser())
@@ -173,6 +171,53 @@ app.get('/', (req, res) => {
 // Використання маршрутів
 app.use('/users', userRoutes)
 app.use('/articles', articleRoutes)
+
+// Маршрут для отримання даних з колекції test
+app.get('/api/test', async (req, res) => {
+  try {
+    const db = client.db(dbName);
+    const documents = await db.collection('test').find().toArray()
+    res.json(documents)
+  } catch (err) {
+    res.status(500).json({ error: 'Помилка при отриманні даних' })
+  }
+})
+
+// Маршрут для додавання документа в колекцію test
+app.post('/api/test', async (req, res) => {
+  try {
+    const db = client.db(dbName)
+    const result = await db.collection('test').insertOne(req.body)
+    res.json(result)
+  } catch (err) {
+    res.status(500).json({ error: 'Помилка при додаванні документа' })
+  }
+})
+
+// Маршрут для оновлення документа в колекцію test
+app.put('/api/test/:id', async (req, res) => {
+  try {
+    const db = client.db(dbName)
+    const result = await db.collection('test').updateOne(
+      { _id: new MongoClient.ObjectId(req.params.id) },
+      { $set: req.body }
+    );
+    res.json(result)
+  } catch (err) {
+    res.status(500).json({ error: 'Помилка при оновленні документа' })
+  }
+})
+
+// Маршрут для видалення документа з колекції test
+app.delete('/api/test/:id', async (req, res) => {
+  try {
+    const db = client.db(dbName)
+    const result = await db.collection('test').deleteOne({ _id: new MongoClient.ObjectId(req.params.id) })
+    res.json(result)
+  } catch (err) {
+    res.status(500).json({ error: 'Помилка при видаленні документа' })
+  }
+})
 
 // Маршрут для збереження теми
 app.get('/set-theme/:theme', ensureAuthenticated, (req, res) => {

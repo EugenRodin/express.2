@@ -2,12 +2,12 @@ doctype html
 html
   head
     title Users
-    link(rel="stylesheet", href="/style.css")
+    link(rel="stylesheet", href="/css/style.css")
+    script(type="module", src="/js/api.mjs")
   body
     header.header
       nav
         ul.nav-list
-          li.nav-item: a.nav-link(href='/') Головна
           li.nav-item: a.nav-link(href='/users') Користувачі
           li.nav-item: a.nav-link(href='/articles') Статті
           li.nav-item: a.nav-link(href='/set-theme/dark') Встановити темну тему
@@ -17,9 +17,15 @@ html
           li.nav-item: a.nav-link(href='/register') Реєстрація
           li.nav-item: a.nav-link(href='/login') Вхід
     main.main-content
-      h1 Users List
+      h1 Список користувачів
       ul.user-list
         each user in users
           li.user-item: a.user-link(href=`/users/${user.id}`) #{user.name}
+      h2 Операції з базою даних
+      .db-operations
+        button.db-button#fetch-data Отримати дані
+        button.db-button#add-document Додати документ
+        button.db-button#update-document Оновити документ
+        button.db-button#delete-document Видалити документ
     footer.footer
       p &copy; 2024 My Application

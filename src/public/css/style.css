@@ -118,3 +118,25 @@ body {
 .button:hover {
     background: #0056b3;
 }
+
+/* Стили для секции операций с базой данных */
+.db-operations {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.db-button {
+    display: inline-block;
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.db-button:hover {
+    background-color: #0056b3;
+}

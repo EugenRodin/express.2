@@ -43,8 +43,6 @@
 ### Користувачі
 - **GET /users**: Повертає список користувачів.
     - **Приклад**: `curl http://localhost:3000/users`
-- **GET /users/:userId**: Повертає деталі користувача за `userId`.
-    - **Приклад**: `curl http://localhost:3000/users/1`
 
 ### Статті
 - **GET /articles**: Повертає список статей.
@@ -57,7 +55,7 @@
     - **Приклад**: `curl http://localhost:3000/get-theme`
 
 ### Авторизація
-- - **POST /register**: Реєструє нового користувача.
+- **POST /register**: Реєструє нового користувача.
     - **Приклад**: `curl -X POST -d "email=test@example.com&password=123456" http://localhost:3000/register`
 - **POST /login**: Входить користувач.
     - **Приклад**: `curl -X POST -d "email=test@example.com&password=123456" http://localhost:3000/login`
@@ -67,75 +65,31 @@
     - **Приклад**: `curl http://localhost:3000/protected`
 
 ### Операції з документами
-- **Додавання документів**: Додає нові документи до колекції `test`, якщо вони не існують.
-    - **Приклад**: Додає документи до колекції `test`, якщо документ з ім'ям `Test Document 1` не існує.
-- **Оновлення документів**: Оновлює документи у колекції `test`.
-    - **Приклад**: Оновлює документ з ім'ям `Test Document` на `test document updated`.
-- **Видалення документів**: Видаляє документи з колекції `users`.
-    - **Приклад**: Видаляє документ з email `jane@example.com`.
 
-### Отримання лише імені та email користувачів
-- **Отримання лише імені та email користувачів**: Використовується для отримання списку користувачів з їх іменами та email.
-    - **Приклад**:
-    ```javascript
-    // Встановлюємо projection для отримання лише імені та email кожного користувача
-    const userQuery = {}
-    const projection = { name: 1, email: 1, _id: 0 }
-    
-    const usersCollection = db.collection('users')
-    const usersList = await usersCollection.find(userQuery, { projection }).toArray()
-    console.log('Користувачі лише з іменем та email', usersList)
+#### Додавання документів
+- **Маршрут**: `/api/test`
+- **Метод**: `POST`
+- **Що побачите у Postman**: Після відправки запиту ви побачите відповідь у форматі JSON, яка містить повідомлення про успішне додавання документа та сам документ з його ID та ім'ям. Якщо виникне помилка, ви побачите повідомлення про помилку у форматі JSON.
+- **500 Internal Server Error**: Помилка при видаленні документа.
 
-## Робота з базою даних
+#### Оновлення документів
+- **Маршрут**: `/api/test/:id`
+- **Метод**: `PUT`
+- **Що побачите у Postman**: Після відправки запиту ви побачите відповідь у форматі JSON, яка містить повідомлення про успішне оновлення документа та оновлений документ з його ID та новим ім'ям. Якщо виникне помилка, ви побачите повідомлення про помилку у форматі JSON.
+- **500 Internal Server Error**
 
-### Додавання документів
-- **Приклад**: Додає новий документ до колекції [`test`]
-    ```javascript
-    const newDocument = { name: 'Test Document', content: 'This is a test document.' }
-    const result = await db.collection('test').insertOne(newDocument)
-    console.log('Document added:', result.insertedId)
-    ```
+#### Видалення документів
+- **Маршрут**: `/api/test/:id`
+- **Метод**: `DELETE`
+- **Що побачите у Postman**: Після відправки запиту ви побачите відповідь у форматі JSON, яка містить повідомлення про успішне видалення документа. Якщо виникне помилка, ви побачите повідомлення про помилку у форматі JSON.
+- **500 Internal Server Error**
 
-### Оновлення документів
-- **Приклад**: Оновлює документ у колекції [`test`]
-    ```javascript
-    const filter = { name: 'Test Document' }
-    const update = { $set: { content: 'Updated content.' } }
-    const result = await db.collection('test').updateOne(filter, update)
-    console.log('Documents updated:', result.modifiedCount)
-    ```
+#### Отримання даних
+- **Маршрут**: `/api/test`
+- **Метод**: `GET`
+- **Що побачите у Postman**: Після відправки запиту ви побачите відповідь у форматі JSON, яка містить список всіх документів у колекції `test` з їх ID та іменами. Якщо виникне помилка, ви побачите повідомлення про помилку у форматі JSON.
+- **500 Internal Server Error**
 
-### Видалення документів
-- **Приклад**: Видаляє документ з колекції [`test`]
-    ```javascript
-    const filter = { name: 'Test Document' }
-    const result = await db.collection('test').deleteOne(filter)
-    console.log('Documents deleted:', result.deletedCount)
-    ```
-
-### Отримання документів
-- **Приклад**: Отримує документи з колекції [`test`]
-    ```javascript
-    const documents = await db.collection('test').find().toArray()
-    console.log('Documents:', documents)
-    ```
-
-### Отримання лише імені та email користувачів
-- **Приклад**:
-    ```javascript
-    // Встановлюємо projection для отримання лише імені та email кожного користувача
-    const userQuery = {}
-    const projection = { name: 1, email: 1, _id: 0 }
-    
-    const usersCollection = db.collection('users')
-    const usersList = await usersCollection.find(userQuery, { projection }).toArray()
-    console.log('Користувачі лише з іменем та email', usersList)
-    ```
-    
-    ## Підключення до MongoDB Atlas
-Сервер підключається до MongoDB Atlas для зберігання даних. Переконайтеся, що ваш файл `config.mjs` містить правильний рядок підключення до MongoDB Atlas:
-
-```javascript
-const CONFIG = {
-  URI: 'mongodb+srv://Admin:12345!"@cluster0.nh9al.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-}
+### Де побачити результат
+- **Postman**: Ви можете використовувати Postman для відправки запитів і перегляду відповідей у форматі JSON.
+- **Консоль браузера**: Якщо ви використовуєте функції з `api.mjs`, ви побачите результати в консолі браузера, оскільки функції `fetchTestData`, `addTestDocument`, `updateTestDocument` та `deleteTestDocument` виводять результати в консоль.

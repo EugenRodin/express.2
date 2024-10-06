@@ -14,6 +14,8 @@ import users from './models/userModel.mjs'
 import { Admin, MongoClient } from 'mongodb'
 import CONFIG from './config.mjs'
 import { getUsers } from './services/userService.mjs'
+import { ObjectId } from 'mongodb'
+import chalk from 'chalk'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -51,8 +53,11 @@ async function connect() {
 
       // Додавання документів до колекції
       await db.collection('test').insertMany([
-        { name: 'Test Document 1' },
-        { name: 'Test Document 2' }
+        { name: 'Test Document 1', age: 30 },
+        { name: 'Test Document 2', age: 25 },
+        { name: 'Test Document 3', age: 35 },
+        { name: 'Test Document 4', age: 40 },
+        { name: 'Test Document 5', age: 21 }
       ])
       console.log('Документи додано успішно')
     } else {
@@ -93,6 +98,24 @@ async function connect() {
     const usersCollection = db.collection('users')
     const usersList = await usersCollection.find(userQuery, { projection }).toArray()
     console.log('Користувачі лише з іменем та email', usersList)
+
+    // Сортування документів за віком у порядку зростання та обмеження до 3 документів
+    const ascendingSortedDocuments = await db
+    .collection('users')
+    .find({})
+    .sort({ age: 1 })
+    .limit(3)
+    .toArray()
+      console.log(chalk.magentaBright('Top 3 documents sorted by age in ascending order:'), ascendingSortedDocuments)
+
+    // Сортування документів за віком у порядку спадання та обмеження до 3 документів
+    const descendingSortedDocuments = await db
+    .collection('users')
+    .find({})
+    .sort({ age: -1 })
+    .limit(3)
+    .toArray()
+      console.log(chalk.magentaBright('Top 3 documents sorted by age in descending order:'), descendingSortedDocuments)
   } catch (err) {
     console.error('Помилка при роботі з базою даних', err)
   }
@@ -188,7 +211,7 @@ app.post('/api/test', async (req, res) => {
   try {
     const db = client.db(dbName)
     const result = await db.collection('test').insertOne(req.body)
-    res.json(result)
+    res.status(201).json(result)
   } catch (err) {
     res.status(500).json({ error: 'Помилка при додаванні документа' })
   }
@@ -199,9 +222,9 @@ app.put('/api/test/:id', async (req, res) => {
   try {
     const db = client.db(dbName)
     const result = await db.collection('test').updateOne(
-      { _id: new MongoClient.ObjectId(req.params.id) },
+      { _id: new ObjectId(req.params.id) },
       { $set: req.body }
-    );
+    )
     res.json(result)
   } catch (err) {
     res.status(500).json({ error: 'Помилка при оновленні документа' })
@@ -212,10 +235,31 @@ app.put('/api/test/:id', async (req, res) => {
 app.delete('/api/test/:id', async (req, res) => {
   try {
     const db = client.db(dbName)
-    const result = await db.collection('test').deleteOne({ _id: new MongoClient.ObjectId(req.params.id) })
+    const result = await db.collection('test').deleteOne({ _id: new ObjectId(req.params.id) })
     res.json(result)
   } catch (err) {
     res.status(500).json({ error: 'Помилка при видаленні документа' })
+  }
+})
+
+app.get('/api/users/sorted', async (req, res) => {
+  try {
+    await client.connect()
+    const db = client.db(dbName)
+    const usersCollection = db.collection('users')
+
+    const sortedUsers = await usersCollection
+      .find({})
+      .sort({ age: 1 })
+      .limit(3)
+      .toArray()
+
+    res.json(sortedUsers)
+  } catch (err) {
+    console.error('Error fetching sorted users:', err)
+    res.status(500).json({ error: 'Internal Server Error' })
+  } finally {
+    await client.close()
   }
 })
 

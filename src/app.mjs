@@ -35,7 +35,7 @@ async function connect() {
   try { 
     // Встановлення з'єднання з MongoDB Atlas 
     await client.connect() 
-    debug('Успішно підключено до MongoDB Atlas') 
+    console.log('Успішно підключено до MongoDB Atlas') 
     
     // Отримання посилання на базу даних у Atlas 
     const db = client.db(dbName) 
@@ -44,13 +44,13 @@ async function connect() {
     const collections = await db.listCollections().toArray()
     if (!collections.some(col => col.name === 'test')) {
       await db.createCollection('test')
-      debug('Колекцію test створено успішно')
+      console.log('Колекцію test створено успішно')
     }
 
     // Перевірка, чи існує документ у колекції test
     const testDocument = await db.collection('test').findOne({ name: 'Test Document 1' })
     if (!testDocument) {
-      debug('Документ не існує, додаємо нові документи')
+      console.log('Документ не існує, додаємо нові документи')
 
       // Додавання документів до колекції
       await db.collection('test').insertMany([
@@ -60,9 +60,9 @@ async function connect() {
         { name: 'Test Document 4', age: 40 },
         { name: 'Test Document 5', age: 21 }
       ])
-      debug('Документи додано успішно')
+      console.log('Документи додано успішно')
     } else {
-      debug('Документи вже існують')
+      console.log('Документи вже існують')
     }
 
     // Визначаємо критерій для вибору документу
@@ -72,7 +72,7 @@ async function connect() {
 
     // Оновлюємо один документ, який відповідає критерію
     const result = await db.collection('test').updateOne(query, update)
-    debug(`Оновлено ${result.modifiedCount} документ(ів)`)
+    console.log(`Оновлено ${result.modifiedCount} документ(ів)`)
 
     // Перевірка, чи існують користувачі у колекції users
     const userCount = await db.collection('users').countDocuments()
@@ -80,9 +80,9 @@ async function connect() {
       // Додавання користувачів до колекції, якщо вони не існують
       const usersFromService = getUsers()
       await db.collection('users').insertMany(usersFromService)
-      debug('Користувачів додано успішно')
+      console.log('Користувачів додано успішно')
     } else {
-      debug('Користувачі вже існують')
+      console.log('Користувачі вже існують')
     }
 
     // Визначаємо критерій для видалення документу
@@ -90,7 +90,7 @@ async function connect() {
 
     // Видаляємо один документ, який відповідає критерію
     const deleteResult = await db.collection('users').deleteOne(deleteQuery)
-    debug(`Видалено ${deleteResult.deletedCount} документ(ів)`)
+    console.log(`Видалено ${deleteResult.deletedCount} документ(ів)`)
 
     // Встановлюємо projection для отримання лише імені та email кожного користувача
     const userQuery = {}
@@ -98,25 +98,25 @@ async function connect() {
 
     const usersCollection = db.collection('users')
     const usersList = await usersCollection.find(userQuery, { projection }).toArray()
-    debug('Користувачі лише з іменем та email', usersList)
+    console.log('Користувачі лише з іменем та email', usersList)
 
     // Сортування документів за віком у порядку зростання та обмеження до 3 документів
     const ascendingSortedDocuments = await db
     .collection('users')
     .find({})
     .sort({ age: 1 })
-    .limit(3)
+    .limit(10)
     .toArray()
-      debug(chalk.magentaBright('Top 3 documents sorted by age in ascending order:'), ascendingSortedDocuments)
+      console.log(chalk.magentaBright('Top 3 documents sorted by age in ascending order:'), ascendingSortedDocuments)
 
     // Сортування документів за віком у порядку спадання та обмеження до 3 документів
     const descendingSortedDocuments = await db
     .collection('users')
     .find({})
     .sort({ age: -1 })
-    .limit(3)
+    .limit(10)
     .toArray()
-      debug(chalk.magentaBright('Top 3 documents sorted by age in descending order:'), descendingSortedDocuments)
+      console.log(chalk.magentaBright('Top 3 documents sorted by age in descending order:'), descendingSortedDocuments)
   } catch (err) {
     console.error('Помилка при роботі з базою даних', err)
   }
@@ -245,17 +245,18 @@ app.delete('/api/test/:id', async (req, res) => {
 
 app.get('/api/users/sorted', async (req, res) => {
   try {
-    await client.connect()
-    const db = client.db(dbName)
-    const usersCollection = db.collection('users')
+    res.json(ascendingSortedDocuments)
+  } catch (err) {
+    console.error('Error fetching sorted users:', err)
+    res.status(500).json({ error: 'Internal Server Error' })
+  } finally {
+    await client.close()
+  }
+})
 
-    const sortedUsers = await usersCollection
-      .find({})
-      .sort({ age: 1 })
-      .limit(3)
-      .toArray()
-
-    res.json(sortedUsers)
+app.get('/api/users/sorted', async (req, res) => {
+  try {
+    res.json(descendingSortedDocuments)
   } catch (err) {
     console.error('Error fetching sorted users:', err)
     res.status(500).json({ error: 'Internal Server Error' })
@@ -349,7 +350,7 @@ app.get('/protected', ensureAuthenticated, (req, res) => {
 
 // Запуск сервера
 app.listen(PORT, () => {
-  debug(`Server is running on http://localhost:${PORT}`)
+  console.log(`Server is running on http://localhost:${PORT}`)
 })
 
 export default app

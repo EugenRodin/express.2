@@ -105,7 +105,7 @@ async function connect() {
     .collection('users')
     .find({})
     .sort({ age: 1 })
-    .limit(10)
+    .limit(3)
     .toArray()
       console.log(chalk.magentaBright('Top 3 documents sorted by age in ascending order:'), ascendingSortedDocuments)
 
@@ -114,9 +114,19 @@ async function connect() {
     .collection('users')
     .find({})
     .sort({ age: -1 })
-    .limit(10)
+    .limit(3)
     .toArray()
       console.log(chalk.magentaBright('Top 3 documents sorted by age in descending order:'), descendingSortedDocuments)
+
+    const cursor = db.collection('users').find({})
+    try {
+      while (await cursor.hasNext()) {
+        const doc = await cursor.next()
+        console.log(doc)
+      }
+    } finally {
+      await cursor.close()
+    }
   } catch (err) {
     console.error('Помилка при роботі з базою даних', err)
   }
@@ -245,6 +255,7 @@ app.delete('/api/test/:id', async (req, res) => {
 
 app.get('/api/users/sorted', async (req, res) => {
   try {
+
     res.json(ascendingSortedDocuments)
   } catch (err) {
     console.error('Error fetching sorted users:', err)
